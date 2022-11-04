@@ -1,1 +1,1 @@
-//float time_error(float signal[], int samprate);
+float time_error(float signal[], int samprate);
