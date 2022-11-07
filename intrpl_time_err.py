@@ -30,18 +30,18 @@ b, a = butter_lowpass(cutoff, fs, order)
 T = 1.0       # value taken in seconds
 n = int(T * fs) # indicates total samples
 t = np.linspace(0, T, n, endpoint=False)
-no_symb=5 # no. of symbols
+no_symb=100 # no. of symbols
 up_samp=100 # no. of sample per symb to feed the filter 
 down_samp=25 # no. of samples per symb to calculate slope, we are considering 1st sample out of 1st 25 samples
 data = np.ndarray((no_symb*up_samp), dtype=float) # 600= 6 symbol and 100 samples per symbol 
 sampled_data = np.ndarray(int((no_symb*up_samp) / down_samp), dtype=float)
 symb = np.ndarray(no_symb, dtype=float)
-mu = 0.5
+mu = 0.5 #interpolating constant
 
 #mm = np.arange(no_symb, dtype=float)
-y_axis = np.arange(no_symb-1, dtype=float)
-x_axis = np.arange(no_symb-1, dtype=float)
-y1_axis = np.arange(no_symb-1, dtype=float)
+y_axis = np.arange(no_symb, dtype=float)
+x_axis = np.arange(no_symb, dtype=float)
+y1_axis = np.arange(no_symb, dtype=float)
 x1_axis = np.arange(no_symb-1, dtype=float)
 
 for i in range(0, no_symb):
@@ -61,8 +61,8 @@ for i in range(len(symb)):
 y = butter_lowpass_filter(data, cutoff, fs, order)
 
 #for i in range(0,no_symb): #up_samp
-sampled_data = y[3::down_samp]
-#sampled_data_down = sampled_data[i::3]
+sampled_data = y[25::down_samp]
+sampled_data_down = sampled_data[0::3]
 #print(y1_axis)
     #print(type(len(sampled_data))) # class int
     #print(type(mm[i])) #--> nummpy float
@@ -78,7 +78,7 @@ proc = subprocess.Popen([
 bytes = b""
 for sample in sampled_data:
     bytes += b"%f\n" % (np.real(sample)) # each sample of symbol type converting it to float and sending it in bytes (instead of string)
-
+    print(sample)
 stdout, stderr = proc.communicate(bytes) # wrtings argument to std in to C prog, then wait till excu of process, ret to py.
 #print(stdout)
     #print(len(stdout))
@@ -108,9 +108,10 @@ plot_fl = []
     #err=struct.unpack('b',b'5.0817e-0080.6709371.01240.9985311.000520.20916')
     #print(err)
     #print(error)
-    
+#print('_________________________________________________________________________________________')
+
 y_axis = plot_fl
-y1_axis= sampled_data
+y1_axis= sampled_data_down
 y1_axis = y1_axis[0:99]   
  #x_axis [i] =  i
     #y1_axis [i] = 
@@ -119,4 +120,5 @@ y1_axis = y1_axis[0:99]
 
 #plt.plot(x_axis, y_axis , marker="+", label = 'interpolator')
 #plt.plot(x1_axis, y1_axis , marker="x", label = 'lowpass',linestyle="-.")
+plt.plot(sampled_data, marker="x")
 plt.show()
