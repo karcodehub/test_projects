@@ -2,7 +2,7 @@
 #include <iostream>
 #include <string>
 #include <complex.h>
-#include "linker.hpp"
+//#include "linker.hpp"
 using namespace std;
 int main(int argc, char **argv)
 {
@@ -75,34 +75,35 @@ for(int loop=0;loop<samprate;loop+=down_samp)
   samp_offset = floor(Mu);
   Mu= Mu - samp_offset;
  }
-  cout<<"\n samp_offset="<<samp_offset;
+  /*cout<<"\n samp_offset="<<samp_offset;
   cout<<"\n\nMu="<<Mu<<"\t  signal0="<<signal[loop]<<"+"<<"\t (1-Mu)signal1="<<signal[loop+1];
   cout<<"\nMu="<<Mu<<"\t  signal1="<<signal[loop+1]<<"+"<<"\t (1-Mu)signal2="<<signal[loop+2];
-  cout<<"\nMu="<<Mu<<"\t  signal2="<<signal[loop+2]<<"+"<<"\t (1-Mu)signal3="<<signal[loop+3];
+  cout<<"\nMu="<<Mu<<"\t  signal2="<<signal[loop+2]<<"+"<<"\t (1-Mu)signal3="<<signal[loop+3];*/
   
     intrpol[loop] = ((Mu * signal[loop + samp_offset])  + ((1 - Mu) * signal[loop+1+ samp_offset]));
   intrpol[loop+1] = ((Mu * signal[loop+1+ samp_offset]) + ((1 - Mu) * signal[loop+2+ samp_offset]));
   intrpol[loop+2] = ((Mu * signal[loop+2+ samp_offset]) + ((1 - Mu) * signal[loop+3+ samp_offset]));
   intrpol[loop+3] = ((Mu * signal[loop+3+ samp_offset]) + ((1 - Mu) * signal[loop+4+ samp_offset]));
 
-  cout<<"\n\n intrp : "<<Mu<<" * "<<signal[loop + samp_offset]<<" + "<< 1-Mu <<" * "<<signal[loop+1+ samp_offset]<<"="<< intrpol[loop];
+  /*cout<<"\n\n intrp : "<<Mu<<" * "<<signal[loop + samp_offset]<<" + "<< 1-Mu <<" * "<<signal[loop+1+ samp_offset]<<"="<< intrpol[loop];
   cout<<"\n intrp1 : "<<Mu<<" * "<<signal[loop+1+ samp_offset]<<" + "<< 1-Mu <<" * "<<signal[loop+2+ samp_offset]<<"="<< intrpol[loop+1];
   cout<<"\n intrp2 : "<<Mu<<" * "<<signal[loop+2+ samp_offset]<<" + "<< 1-Mu <<" * "<<signal[loop+3+ samp_offset]<<"="<< intrpol[loop+2];
+    */
     slope[loop+1] = (intrpol[loop+2]- intrpol[loop]); //slope of 2nd point
     //slope[loop+2] = (signal[loop+3]- signal[loop+1]);// slope of 3rd point
-     cout << "\n\n slope of itp1 " << loop+1 << "th sample  is itp2 - itp \t" <<intrpol[loop+2] << "-" <<intrpol[loop]<<"=" << slope[loop+1] <<"\n";
+    // cout << "\n\n slope of itp1 " << loop+1 << "th sample  is itp2 - itp \t" <<intrpol[loop+2] << "-" <<intrpol[loop]<<"=" << slope[loop+1] <<"\n";
        slp_amp[loop+1] = (slope[loop+1] * intrpol[loop+1]);// mul with amp of 2nd point
        //slp_amp[loop+2] = (slope[loop+2] * intrpol[loop+2]);// mul with amp of 3d point
-      cout << "\n slope amplitudde of  " << loop+1 << "th sample  is \t" <<slope[loop+1] << "*" <<intrpol[loop+1]<<"=" << slp_amp[loop+1] <<"\n\n\n";
+      //cout << "\n slope amplitudde of  " << loop+1 << "th sample  is \t" <<slope[loop+1] << "*" <<intrpol[loop+1]<<"=" << slp_amp[loop+1] <<"\n\n\n";
           time_err[int((loop/down_samp)+1)] = slp_amp[loop+1];  
         //time_err[int((loop/down_samp)+1)] = (slp_amp[loop+2]+slp_amp[loop+1]) /2;
         //cout<< time_err[int((loop/down_samp)+1)];
         all_err=0;count=0;
-        cout<< "\n before add:loop  \t" << "\n avg_err + time_err = " << avg_err <<" + "<< time_err[int((loop/down_samp)+1)];
-        cout<< "\n\n loop begin for last 5 err: all_err=";       
-       for(int arr=(loop/down_samp)+1; arr>0 && count<5;arr--)
+        //cout<< "\n before add:loop  \t" << "\n avg_err + time_err = " << avg_err <<" + "<< time_err[int((loop/down_samp)+1)];
+        //cout<< "\n\n loop begin for last 5 err: all_err=";       
+       for(int arr=(loop/down_samp)+1; arr>0 && count<10;arr--)
         {
-        cout<< time_err[arr] <<"+";
+        //cout<< time_err[arr] <<"+";
           all_err+=time_err[arr];
           count++;
         
@@ -110,8 +111,8 @@ for(int loop=0;loop<samprate;loop+=down_samp)
         }
         
         avg_err= (all_err/(5));
-        cout<< "\n\nall_err="<< all_err << "\t avg_err=" << avg_err;
-        cout<<"\n\n Mu + (avg_err*Mu_const)=  "<< Mu<<" + "<<avg_err<<" * "<<Mu_const<<" = "<< (Mu + avg_err*Mu_const);
+        //cout<< "\n\nall_err="<< all_err << "\t avg_err=" << avg_err;
+        //cout<<"\n\n Mu + (avg_err*Mu_const)=  "<< Mu<<" + "<<avg_err<<" * "<<Mu_const<<" = "<< (Mu + avg_err*Mu_const);
         Mu = Mu + avg_err*Mu_const;
         //cout << "\n Mu="<< Mu;
         //cout<<"\ntime_err"<< loop <<time_err[loop]<<"\n";
@@ -119,7 +120,7 @@ for(int loop=0;loop<samprate;loop+=down_samp)
         //cout<<"intrpol="<<intrpol[loop];
      // s[loop] = ((intr_pt * slp_amp[loop]) + ((1 - intr_pt) * slp_amp[loop] ) ; 
         //printf("%9.5f",time_err[int((loop/down_samp)+1)]);
-       //printf("%9.5f",Mu);
+       printf("%9.5f",Mu);
 }
 
  

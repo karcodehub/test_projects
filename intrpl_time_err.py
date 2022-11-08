@@ -36,7 +36,8 @@ down_samp=25 # no. of samples per symb to calculate slope, we are considering 1s
 data = np.ndarray((no_symb*up_samp), dtype=float) # 600= 6 symbol and 100 samples per symbol 
 sampled_data = np.ndarray(int((no_symb*up_samp) / down_samp), dtype=float)
 symb = np.ndarray(no_symb, dtype=float)
-mu = 0.5 #interpolating constant
+mu = 0.37 #interpolating constant
+Mu_const=0.05
 
 #mm = np.arange(no_symb, dtype=float)
 y_axis = np.arange(no_symb, dtype=float)
@@ -61,7 +62,7 @@ for i in range(len(symb)):
 y = butter_lowpass_filter(data, cutoff, fs, order)
 
 #for i in range(0,no_symb): #up_samp
-sampled_data = y[25::down_samp]
+sampled_data = y[10::down_samp]
 sampled_data_down = sampled_data[0::3]
 #print(y1_axis)
     #print(type(len(sampled_data))) # class int
@@ -71,14 +72,15 @@ sampled_data_down = sampled_data[0::3]
 proc = subprocess.Popen([ 
      "C:\\Users\Karthik Lokesh\\Desktop\\Proj_Arb\\interpolator\\wrp\\intrpl.exe", 
      "%f" % len(sampled_data),
-     "%f" % mu], # output to std I/O path 
+     "%f" % mu,
+     "%f" % Mu_const], # output to std I/O path 
      stdout=subprocess.PIPE, stdin=subprocess.PIPE)
 
 # Generate 
 bytes = b""
 for sample in sampled_data:
     bytes += b"%f\n" % (np.real(sample)) # each sample of symbol type converting it to float and sending it in bytes (instead of string)
-    print(sample)
+    #print(sample)
 stdout, stderr = proc.communicate(bytes) # wrtings argument to std in to C prog, then wait till excu of process, ret to py.
 #print(stdout)
     #print(len(stdout))
