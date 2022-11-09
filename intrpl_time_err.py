@@ -36,8 +36,8 @@ down_samp=25 # no. of samples per symb to calculate slope, we are considering 1s
 data = np.ndarray((no_symb*up_samp), dtype=float) # 600= 6 symbol and 100 samples per symbol 
 sampled_data = np.ndarray(int((no_symb*up_samp) / down_samp), dtype=float)
 symb = np.ndarray(no_symb, dtype=float)
-mu = 0.37 #interpolating constant
-Mu_const=0.05
+mu = 0.5 #interpolating constant
+Mu_const=0.15
 
 #mm = np.arange(no_symb, dtype=float)
 y_axis = np.arange(no_symb, dtype=float)
@@ -80,7 +80,7 @@ proc = subprocess.Popen([
 bytes = b""
 for sample in sampled_data:
     bytes += b"%f\n" % (np.real(sample)) # each sample of symbol type converting it to float and sending it in bytes (instead of string)
-    #print(sample)
+    print(sample)
 stdout, stderr = proc.communicate(bytes) # wrtings argument to std in to C prog, then wait till excu of process, ret to py.
 #print(stdout)
     #print(len(stdout))
@@ -122,5 +122,5 @@ y1_axis = y1_axis[0:99]
 
 #plt.plot(x_axis, y_axis , marker="+", label = 'interpolator')
 #plt.plot(x1_axis, y1_axis , marker="x", label = 'lowpass',linestyle="-.")
-plt.plot(sampled_data, marker="x")
+#plt.plot(sampled_data, marker="x")
 plt.show()
