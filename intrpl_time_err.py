@@ -30,7 +30,7 @@ b, a = butter_lowpass(cutoff, fs, order)
 T = 1.0       # value taken in seconds
 n = int(T * fs) # indicates total samples
 t = np.linspace(0, T, n, endpoint=False)
-no_symb=1000 # no. of symbols
+no_symb=10 # no. of symbols
 up_samp=100 # no. of sample per symb to feed the filter 
 down_samp=25 # no. of samples per symb to calculate slope, we are considering 1st sample out of 1st 25 samples
 data = np.ndarray((no_symb*up_samp), dtype=float) # 600= 6 symbol and 100 samples per symbol 
@@ -53,10 +53,10 @@ for i in range(len(symb)):
 
 # Filtering and plotting
 y = butter_lowpass_filter(data, cutoff, fs, order)
-
 #for i in range(0,no_symb): #up_samp
 sampled_data = y[25::down_samp]
 sampled_data_down = sampled_data[0::3]
+print(len(sampled_data))
 
 proc = subprocess.Popen([ 
      "C:\\Users\Karthik Lokesh\\Desktop\\Proj_Arb\\interpolator\\wrp\\intrpl.exe", 
@@ -69,11 +69,11 @@ proc = subprocess.Popen([
 bytes = b""
 for sample in sampled_data:
     bytes += b"%f\n" % (np.real(sample)) # each sample of symbol type converting it to float and sending it in bytes (instead of string)
-    print(sample)
+    #print(sample)
 stdout, stderr = proc.communicate(bytes) # wrtings argument to std in to C prog, then wait till excu of process, ret to py.
 
 output=(stdout.decode("utf-8")) # convert Python bytes object to String
-print(output)
+#print(output)
 
 output_fl=(output.split())
 #plot_fl = []

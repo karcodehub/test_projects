@@ -30,14 +30,16 @@ b, a = butter_lowpass(cutoff, fs, order)
 T = 1.0       # value taken in seconds
 n = int(T * fs) # indicates total samples
 t = np.linspace(0, T, n, endpoint=False)
-no_symb=100 # no. of symbols
-up_samp=100 # no. of sample per symb to feed the filter 
-down_samp=25 # no. of samples per symb to calculate slope, we are considering 1st sample out of 1st 25 samples
+no_symb=25 # no. of symbols
+samp_per_symb=8 # no. of samples per symb to calculate slope, we are considering 1st sample out of 1st 25 samples
+up_samp_const=10
+up_samp= up_samp_const * samp_per_symb # no. of sample per symb to feed the filter 
+ 
 data = np.ndarray((no_symb*up_samp), dtype=float) # 600= 6 symbol and 100 samples per symbol 
-sampled_data = np.ndarray(int((no_symb*up_samp) / down_samp), dtype=float)
+sampled_data = np.ndarray(int((no_symb*samp_per_symb)), dtype=float)
 symb = np.ndarray(no_symb, dtype=float)
-mu = 0.5 #interpolating constant
-Mu_const=0.15
+mu = 0.25 #interpolating constant
+Mu_const=0.05
 
 #mm = np.arange(no_symb, dtype=float)
 y_axis = np.arange(no_symb, dtype=float)
@@ -60,33 +62,35 @@ for i in range(len(symb)):
 
 # Filtering and plotting
 y = butter_lowpass_filter(data, cutoff, fs, order)
-
+print(len(y))
 #for i in range(0,no_symb): #up_samp
-sampled_data = y[10::down_samp]
+sampled_data = y[0::int (up_samp_const)]
 sampled_data_down = sampled_data[0::3]
-#print(y1_axis)
+print(len(sampled_data))
     #print(type(len(sampled_data))) # class int
     #print(type(mm[i])) #--> nummpy float
     #print(type(len(mm))) # class int
     #print(len(sampled_data))
 proc = subprocess.Popen([ 
-     "C:\\Users\Karthik Lokesh\\Desktop\\Proj_Arb\\interpolator\\wrp\\intrpl.exe", 
+     "C:\\Users\Karthik Lokesh\\Desktop\\Proj_Arb\\interpolator\\temp2.exe", 
      "%f" % len(sampled_data),
      "%f" % mu,
-     "%f" % Mu_const], # output to std I/O path 
+     "%f" % Mu_const,
+     "%f" % samp_per_symb], # output to std I/O path 
      stdout=subprocess.PIPE, stdin=subprocess.PIPE)
 
 # Generate 
 bytes = b""
 for sample in sampled_data:
     bytes += b"%f\n" % (np.real(sample)) # each sample of symbol type converting it to float and sending it in bytes (instead of string)
-    print(sample)
+    #print(sample)
 stdout, stderr = proc.communicate(bytes) # wrtings argument to std in to C prog, then wait till excu of process, ret to py.
 #print(stdout)
     #print(len(stdout))
     #print(type(stdout))
 output=(stdout.decode("utf-8")) # convert Python bytes object to String
 print(output)
+
     
     #print(type(output))
     #print(len(output))
