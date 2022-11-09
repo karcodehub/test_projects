@@ -36,13 +36,14 @@ down_samp=25 # no. of samples per symb to calculate slope, we are considering 1s
 data = np.ndarray((no_symb*up_samp), dtype=float) # 600= 6 symbol and 100 samples per symbol 
 sampled_data = np.ndarray(int((no_symb*up_samp) / down_samp), dtype=float)
 symb = np.ndarray(no_symb, dtype=float)
-mu = 0.50
+mu = 0.5 #interpolating constant
+Mu_const=0.15
 
 #mm = np.arange(no_symb, dtype=float)
 y_axis = np.arange(no_symb, dtype=float)
 x_axis = np.arange(no_symb, dtype=float)
 y1_axis = np.arange(no_symb, dtype=float)
-x1_axis = np.arange(no_symb, dtype=float)
+x1_axis = np.arange(no_symb-1, dtype=float)
 
 for i in range(0, no_symb):
     symb[i] = random.choice([-1,1])
@@ -60,38 +61,40 @@ for i in range(len(symb)):
 # Filtering and plotting
 y = butter_lowpass_filter(data, cutoff, fs, order)
 
-for i in range(0,no_symb): #up_samp
-    sampled_data = y[i::down_samp]
-    y1_axis = sampled_data[i::3]
+#for i in range(0,no_symb): #up_samp
+sampled_data = y[10::down_samp]
+sampled_data_down = sampled_data[0::3]
+#print(y1_axis)
     #print(type(len(sampled_data))) # class int
     #print(type(mm[i])) #--> nummpy float
     #print(type(len(mm))) # class int
     #print(len(sampled_data))
-    proc = subprocess.Popen([ 
-        "C:\\Users\Karthik Lokesh\\Desktop\\Proj_Arb\\interpolator\\wrp\\intrpl.exe", 
-        "%f" % len(y1_axis),
-        "%f" % mu], # output to std I/O path 
-        stdout=subprocess.PIPE, stdin=subprocess.PIPE)
+proc = subprocess.Popen([ 
+     "C:\\Users\Karthik Lokesh\\Desktop\\Proj_Arb\\interpolator\\wrp\\intrpl.exe", 
+     "%f" % len(sampled_data),
+     "%f" % mu,
+     "%f" % Mu_const], # output to std I/O path 
+     stdout=subprocess.PIPE, stdin=subprocess.PIPE)
 
 # Generate 
-    bytes = b""
-    for sample in y1_axis:
-        bytes += b"%f\n" % (np.real(sample)) # each sample of symbol type converting it to float and sending it in bytes (instead of string)
-
-    stdout, stderr = proc.communicate(bytes) # wrtings argument to std in to C prog, then wait till excu of process, ret to py.
+bytes = b""
+for sample in sampled_data:
+    bytes += b"%f\n" % (np.real(sample)) # each sample of symbol type converting it to float and sending it in bytes (instead of string)
+    print(sample)
+stdout, stderr = proc.communicate(bytes) # wrtings argument to std in to C prog, then wait till excu of process, ret to py.
 #print(stdout)
     #print(len(stdout))
     #print(type(stdout))
-    output=(stdout.decode("utf-8")) # convert Python bytes object to String
-    #print(output)
+output=(stdout.decode("utf-8")) # convert Python bytes object to String
+print(output)
     
     #print(type(output))
     #print(len(output))
-    output_fl=(output.split())
-    plot_fl = []
+output_fl=(output.split())
+plot_fl = []
 
-    plot_fl = [float(x) for x in output_fl]
-    #print(plot_fl)
+#plot_fl = [float(x) for x in output_fl]
+#print(plot_fl)
     #print([float(x) for x in output_fl])
 
     #float_op= atof(output)
@@ -107,15 +110,17 @@ for i in range(0,no_symb): #up_samp
     #err=struct.unpack('b',b'5.0817e-0080.6709371.01240.9985311.000520.20916')
     #print(err)
     #print(error)
-    
-    y_axis [i] = (sum(plot_fl) / len(plot_fl))
-    x_axis [i] =  i
+#print('_________________________________________________________________________________________')
+
+y_axis = plot_fl
+y1_axis= sampled_data_down
+y1_axis = y1_axis[0:99]   
+ #x_axis [i] =  i
     #y1_axis [i] = 
     #x1_axis [i] = i
     #mul_error[num]=output[-1]
 
-#print(len(y1_axis))
-#print(x_axis)
-plt.plot(x_axis, y_axis , marker="+")
-#plt.plot(x1_axis, y1_axis , marker="x")
+#plt.plot(x_axis, y_axis , marker="+", label = 'interpolator')
+#plt.plot(x1_axis, y1_axis , marker="x", label = 'lowpass',linestyle="-.")
+#plt.plot(sampled_data, marker="x")
 plt.show()
