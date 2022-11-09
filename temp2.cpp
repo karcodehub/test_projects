@@ -4,10 +4,11 @@
 #include <complex.h>
 //#include "linker.hpp"
 using namespace std;
+
 int main(int argc, char **argv)
 {
 
-   if (argc < 3)
+   if (argc < 4)
     {
         printf("Too few arguments.\n");
         printf("Usage: %s  <samprate>\n", argv[0]);
@@ -16,13 +17,14 @@ int main(int argc, char **argv)
 //float* intrpl = new float[100];
 int samprate = atoi(argv[1]); // no of samples
 float Mu = atof(argv[2]);
-float Mu_const = atof(argv[3]); // interpolating points 
+float Mu_const = atof(argv[3]);
+int samp_per_symb = atoi(argv[4]); //
 int prc=0, samp_offset=0,count=0;
 float avg_err=0,all_err=0.0,err_signal;//Mu=0.17,,Mu_const=0.01
 
 
 
-//printf("val of   and mu %f\n",intr_pt);
+printf("val of samp_per_symb %d\n",samp_per_symb);
 //printf("val of no. 1st %d and 2nd %d and 3rd %d  and 4th %d ",argv[0],argv[2],argv[2],argv[3]);
 //%s<->argv[0] --> C:\Users\Karthik Lokesh\Desktop\Proj_Arb\interpolator\wrp\intrpl.exe
 //%s<->argv[1] --> all signals
@@ -62,7 +64,7 @@ float avg_err=0,all_err=0.0,err_signal;//Mu=0.17,,Mu_const=0.01
 //printf("val of no. signal %d",intr_pt );
 
 
-for(int loop=0;loop<samprate;loop+=down_samp)
+for(int loop=0;loop<samprate;loop+=(samp_per_symb))
 { //cout<<"value of loop="<<loop;
   samp_offset=0;
  if(Mu>1)
@@ -120,12 +122,13 @@ for(int loop=0;loop<samprate;loop+=down_samp)
         //cout<<"intrpol="<<intrpol[loop];
      // s[loop] = ((intr_pt * slp_amp[loop]) + ((1 - intr_pt) * slp_amp[loop] ) ; 
         //printf("%9.5f",time_err[int((loop/down_samp)+1)]);
-       printf("%9.5f",Mu);
+           printf("%9.5f", (float)samp_offset + Mu);
+
 }
 
  
 
 }
 
-//cmd to compile: g++ time_error.cpp temp2.cpp -I ../org/ -o time_error.exe 
+//cmd to compile: g++ temp2.cpp -I ../org/ -o temp2.exe 
 //I-> include the path from where it should start looking file, -o -> where o/p should be written 

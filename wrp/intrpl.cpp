@@ -17,6 +17,7 @@ int main(int argc, char **argv)
   int samprate = atoi(argv[1]); // no of samples
   float Mu = atof(argv[2]);
   float Mu_const = atof(argv[3]); // interpolating points
+  int samp_per_symb = atoi(argv[4]);
   int samp_offset = 0,down_samp = 4, count = 0;
   float avg_err = 0, all_err = 0.0, err_signal; // Mu=0.17,,Mu_const=0.01
   float *signal = new float[samprate]; // it takes Input from STD I/O stores the signal samples
@@ -24,7 +25,7 @@ int main(int argc, char **argv)
   float *intrpol = new float[samprate]; // it stores interpolated vales of signal shifted by Mu
   float *slope = new float[samprate]; // val of samprate will be know dynamical so the array is created dynamically
   float *slp_amp = new float[samprate]; // stores slope and amplitude product
-
+printf("val of samp_per_symb %d\n",samp_per_symb);
   for (int loop = 0; loop < samprate; loop++) // reading signal from std I/O
   {
     
@@ -34,7 +35,7 @@ int main(int argc, char **argv)
   }
   
   samp_offset = 0;
-  for (int loop = 0; loop < samprate; loop += down_samp)
+  for (int loop = 0; loop < samprate; loop += samp_per_symb)
   { 
 
     if (Mu > 1)
