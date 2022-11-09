@@ -112,7 +112,7 @@ for(int loop=0;loop<samprate;loop+=down_samp)
         avg_err= (all_err/(5));
         cout<< "\n\nall_err="<< all_err << "\t avg_err=" << avg_err;
         cout<<"\n\n Mu + (avg_err*Mu_const)=  "<< Mu<<" + "<<avg_err<<" * "<<Mu_const<<" = "<< (Mu + avg_err*Mu_const);
-        Mu = Mu + avg_err*Mu_const;
+        Mu = Mu + avg_err * Mu_const;
         //cout << "\n Mu="<< Mu;
         //cout<<"\ntime_err"<< loop <<time_err[loop]<<"\n";
         //intrpol[loop] = ((Mu * signal[loop+1]) + ((1 - Mu) * signal[loop]));
