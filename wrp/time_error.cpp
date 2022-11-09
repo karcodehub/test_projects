@@ -41,7 +41,7 @@ std::string line;       //declaring a varb that gets value from console std i/o,
      //printf("%f ",signal[loop2]);
     }*/
     //printf("val of no. signal %d",prc );
-     time_error(signal,samprate);
+     time_error(signal,samprate);//njs
 }
 
 //cmd to compile: g++ time_error.cpp temp2.cpp -I ../org/ -o time_error.exe 

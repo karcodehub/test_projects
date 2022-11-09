@@ -30,14 +30,14 @@ b, a = butter_lowpass(cutoff, fs, order)
 T = 1.0       # value taken in seconds
 n = int(T * fs) # indicates total samples
 t = np.linspace(0, T, n, endpoint=False)
-no_symb=100 # no. of symbols
+no_symb=1000 # no. of symbols
 up_samp=100 # no. of sample per symb to feed the filter 
 down_samp=25 # no. of samples per symb to calculate slope, we are considering 1st sample out of 1st 25 samples
 data = np.ndarray((no_symb*up_samp), dtype=float) # 600= 6 symbol and 100 samples per symbol 
 sampled_data = np.ndarray(int((no_symb*up_samp) / down_samp), dtype=float)
 symb = np.ndarray(no_symb, dtype=float)
 mu = 0.5 #interpolating constant
-Mu_const=0.15
+Mu_const=0.01
 
 #mm = np.arange(no_symb, dtype=float)
 y_axis = np.arange(no_symb, dtype=float)
@@ -62,7 +62,7 @@ for i in range(len(symb)):
 y = butter_lowpass_filter(data, cutoff, fs, order)
 
 #for i in range(0,no_symb): #up_samp
-sampled_data = y[10::down_samp]
+sampled_data = y[75::down_samp]
 sampled_data_down = sampled_data[0::3]
 #print(y1_axis)
     #print(type(len(sampled_data))) # class int
@@ -91,9 +91,9 @@ print(output)
     #print(type(output))
     #print(len(output))
 output_fl=(output.split())
-plot_fl = []
+#plot_fl = []
 
-#plot_fl = [float(x) for x in output_fl]
+plot_fl = [float(x) for x in output_fl]
 #print(plot_fl)
     #print([float(x) for x in output_fl])
 
@@ -120,7 +120,7 @@ y1_axis = y1_axis[0:99]
     #x1_axis [i] = i
     #mul_error[num]=output[-1]
 
-#plt.plot(x_axis, y_axis , marker="+", label = 'interpolator')
+plt.plot(x_axis, y_axis , marker="+", label = 'interpolator')
 #plt.plot(x1_axis, y1_axis , marker="x", label = 'lowpass',linestyle="-.")
 #plt.plot(sampled_data, marker="x")
 plt.show()
