@@ -24,7 +24,7 @@ float avg_err=0,all_err=0.0,err_signal;//Mu=0.17,,Mu_const=0.01
 
 
 
-printf("val of samp_per_symb %d\n",samp_per_symb);
+//printf("val of samp_per_symb %d\n",samp_per_symb);
 //printf("val of no. 1st %d and 2nd %d and 3rd %d  and 4th %d ",argv[0],argv[2],argv[2],argv[3]);
 //%s<->argv[0] --> C:\Users\Karthik Lokesh\Desktop\Proj_Arb\interpolator\wrp\intrpl.exe
 //%s<->argv[1] --> all signals
@@ -97,13 +97,13 @@ for(int loop=0;loop<samprate;loop+=(samp_per_symb))
        slp_amp[loop+1] = (slope[loop+1] * intrpol[loop+1]);// mul with amp of 2nd point
        //slp_amp[loop+2] = (slope[loop+2] * intrpol[loop+2]);// mul with amp of 3d point
       //cout << "\n slope amplitudde of  " << loop+1 << "th sample  is \t" <<slope[loop+1] << "*" <<intrpol[loop+1]<<"=" << slp_amp[loop+1] <<"\n\n\n";
-          time_err[int((loop/down_samp)+1)] = slp_amp[loop+1];  
+          time_err[int((loop/samp_per_symb)+1)] = slp_amp[loop+1];  
         //time_err[int((loop/down_samp)+1)] = (slp_amp[loop+2]+slp_amp[loop+1]) /2;
         //cout<< time_err[int((loop/down_samp)+1)];
         all_err=0;count=0;
         //cout<< "\n before add:loop  \t" << "\n avg_err + time_err = " << avg_err <<" + "<< time_err[int((loop/down_samp)+1)];
         //cout<< "\n\n loop begin for last 5 err: all_err=";       
-       for(int arr=(loop/down_samp)+1; arr>0 && count<10;arr--)
+       for(int arr=(loop/samp_per_symb)+1; arr>0 && count<10;arr--)
         {
         //cout<< time_err[arr] <<"+";
           all_err+=time_err[arr];
