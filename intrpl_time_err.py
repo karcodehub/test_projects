@@ -39,14 +39,14 @@ up_samp= up_samp_const * samp_per_symb # no. of sample per symb to feed the filt
 data = np.ndarray((no_symb*up_samp), dtype=float) # 600= 6 symbol and 100 samples per symbol 
 sampled_data = np.ndarray(int((no_symb*samp_per_symb)), dtype=float)
 symb = np.ndarray(no_symb, dtype=float)
-alpha = 0.4 #interpolating constant
+alpha = 0.35 #interpolating constant
 alpha_const=0.05
 
 #mm = np.arange(no_symb, dtype=float)
 y_axis = np.arange(no_symb, dtype=float)
-x_axis = np.arange(no_symb, dtype=float)
+x_axis = np.arange(no_symb-1, dtype=float)
 y1_axis = np.arange(no_symb, dtype=float)
-x1_axis = np.arange(no_symb-1, dtype=float)
+x1_axis = np.arange(no_symb, dtype=float)
 
 for i in range(0, no_symb):
     #random.seed(0)# previous seat was time, it generate random symb --> random signals

@@ -35,7 +35,7 @@ int main(int argc, char **argv)
   }
   
   samp_offset = 0;
-  for (int loop = 0; loop < samprate; loop += samp_per_symb)
+  for (int loop = 0; loop < samprate-samp_per_symb; loop += samp_per_symb)
   { 
 
     if (alpha > 1)
@@ -73,14 +73,14 @@ int main(int argc, char **argv)
     //cout << "\n avg_err + time_err = " << avg_err << " + " << time_err[int((loop / down_samp) + 1)];
 
     //loop to add all last 5 errors
-    for (int arr = (loop / samp_per_symb) + 1; arr > 0 && count < 5; arr--)
+    for (int arr = (loop / samp_per_symb) + 1; arr > 0 && count < 20; arr--)
     {
       // cout << time_err[arr] << "+";
       all_err += time_err[arr];
       count++;
     }
 
-    avg_err = (all_err / (5)); // avg of last 5 time error values
+    avg_err = (all_err / (20)); // avg of last 5 time error values
 
     // cout << "\n\nall_err=" << all_err << "\t avg_err=" << avg_err;
     // cout << "\n\n alpha + (avg_err*alpha_const)=  " << alpha << " + " << avg_err << " * " << alpha_const << " = " << (alpha + avg_err * alpha_const);
