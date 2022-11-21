@@ -62,8 +62,8 @@ for i in range(len(symb)):
 # Filtering and plotting
 y = butter_lowpass_filter(data, cutoff, fs, order)
 #print(len(y))
-for i in range(0,int( up_samp_const)): #up_samp
-    sampled_data = y[i::int (up_samp_const/samp_per_symb)]
+for i in range(0,int( up_samp_const)): #up_samp_const 400
+    sampled_data = y[i::int (up_samp_const/samp_per_symb)] #y 
     
     #sampled_data_down = sampled_data[0::3]
     #np.savetxt('input_sig.txt', [sampled_data], delimiter='\n')
@@ -117,7 +117,7 @@ for i in range(0,int( up_samp_const)): #up_samp
     #mul_error[num]=output[-1]
 
 plt.plot(x_axis, y_axis , marker="+", label = 'mean_alpha')
-#plt.plot(x1_axis, y1_axis , marker="x", label = 'std_div',linestyle="-.")
+plt.plot(x1_axis, y1_axis , marker="x", label = 'std_div',linestyle="-.")
 #plt.plot(sampled_data, marker="x")
 #plt.plot(x2_axis, y2_axis , marker="+", label = 'mean_alpha')
 plt.show()
