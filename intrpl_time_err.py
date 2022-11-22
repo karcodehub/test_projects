@@ -42,8 +42,8 @@ y_axis = np.arange((up_samp_const), dtype=float) # 400
 x_axis = np.arange((up_samp_const), dtype=float)
 y1_axis = np.arange((up_samp_const), dtype=float)
 x1_axis = np.arange((up_samp_const), dtype=float)
-y2_axis = np.arange(no_symb, dtype=float) # -1
-x2_axis = np.arange(no_symb-1, dtype=float)# -2 for quad and cubic --> in loop:samprate-samp_per_symb-4, -4 because we consider 6 samples for 1 cal of delat oe beta
+y2_axis = np.arange(no_symb-1, dtype=float) # -1
+x2_axis = np.arange(no_symb-2, dtype=float)# -2 for quad and cubic --> in loop:samprate-samp_per_symb-4, -4 because we consider 6 samples for 1 cal of delat oe beta
 
 random.seed(0) # randomness is const=> each time similar type of signal gen
 for i in range(0, no_symb):
@@ -70,7 +70,7 @@ for i in range(0,int( up_samp_const)): #up_samp 400 loops
     #print("__________\n","sampled_data=",len(sampled_data))
     #print(sampled_data) 
     proc = subprocess.Popen([ 
-        "C:\\Users\Karthik Lokesh\\Desktop\\Proj_Arb\\interpolator\\wrp\\intrpl.exe", 
+        "C:\\Users\Karthik Lokesh\\Desktop\\Proj_Arb\\interpolator\\wrp\\cubic_intrpl.exe", 
         "%f" % len(sampled_data),
         "%f" % mu,
         "%f" % Mu_const,
@@ -95,9 +95,9 @@ for i in range(0,int( up_samp_const)): #up_samp 400 loops
     plot_fl = [float(x) for x in output_fl]
     #print(plot_fl)
     y2_axis=plot_fl
-    if (i==0 or i==1 or i==2 or i==3 or i==4):
-        plt.plot(x2_axis, y2_axis , marker="+", label = 'mean_alpha')
-        plt.show()
+    #if (i==0 or i==1 or i==2 or i==3 or i==4):
+     #   plt.plot(x2_axis, y2_axis , marker="+", label = 'mean_alpha')
+      #  plt.show()
     symb_last = plot_fl[int(-(100)):]
     print("\n loop=",i,":  mean=",np.mean(symb_last))#last alphas=",symb_last, 
     #print("\n \n loop=",i,"no. of symb", no_symb, "samples per symb", samp_per_symb,"alpha=",mu,"alpha mul_const=", Mu_const)
@@ -112,8 +112,26 @@ for i in range(0,int( up_samp_const)): #up_samp 400 loops
     x1_axis [i] = i
     #mul_error[num]=output[-1]
 
-plt.plot(x_axis, y_axis , marker="+", label = 'mean_alpha')
-plt.plot(x1_axis, y1_axis , marker="x", label = 'std_div',linestyle="-.")
+
+plt.subplot(2,1,1)
+plt.plot(x_axis, y_axis , marker="+", label = 'mean_time_error', color='b')
+plt.legend(loc="upper left")
+plt.xlabel("total numb of up-sampled per symb",color='b')
+plt.ylabel("Time-error for all symbs(1k)", color='b')
+plt.grid(color = 'green', linestyle = '__', linewidth = 0.5)
+
+
+
+
+plt.subplot(2,1,2)
+plt.plot(x1_axis, y1_axis , marker="x", label = 'std_div',linestyle="-.", color='c')
+plt.legend(loc="upper left")
+plt.xlabel("total numb of up-sampled per symb", color='c')
+plt.ylabel("Std-div for all symbs(1k)", color='c')
+plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
 #plt.plot(sampled_data, marker="x")
 #plt.plot(x2_axis, y2_axis , marker="+", label = 'mean_alpha')
+
+plt.suptitle("Cubic Interpolator")
+plt.grid(color = 'green', linestyle = '--', linewidth = 0.1)
 plt.show()

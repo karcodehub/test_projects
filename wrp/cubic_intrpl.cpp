@@ -100,7 +100,7 @@ int main(int argc, char **argv)
     // cout << "\n\n delta + (avg_err*delta)=  " << delta << " + " << avg_err << " * " << delta << " = " << (delta + avg_err * delta);
     
     delta = delta + avg_err * delta_const;
-    // printf("%9.5f",time_err[int((loop/samp_per_symb)+1)]);
+     //printf("%9.5f",(float) time_err[int((loop/samp_per_symb)+1)]);
     printf("%9.5f", (float)samp_offset + delta);
   }
 }
