@@ -39,9 +39,9 @@ Mu_const=0.05
 avg_last=0.0
 
 y_axis = np.arange((up_samp_const), dtype=float) # 400
-x_axis = np.arange((up_samp_const), dtype=float)
+x_axis = np.arange(-.5,.5,.0025, dtype=float)#x_axis = np.arange((up_samp_const), dtype=float)
 y1_axis = np.arange((up_samp_const), dtype=float)
-x1_axis = np.arange((up_samp_const), dtype=float)
+x1_axis = np.arange(-.5,.5,.0025, dtype=float) #x1_axis = np.arange((up_samp_const), dtype=float)
 y2_axis = np.arange(no_symb-1, dtype=float) # -1
 x2_axis = np.arange(no_symb-2, dtype=float)# -2 for quad and cubic --> in loop:samprate-samp_per_symb-4, -4 because we consider 6 samples for 1 cal of delat oe beta
 
@@ -107,18 +107,18 @@ for i in range(0,int( up_samp_const)): #up_samp 400 loops
     y_axis[i] = np.mean(symb_last)
     #y1_axis= sampled_data_down
     #y1_axis = y1_axis[0:99]   
-    x_axis [i] =  i
+    #x_axis [i] =  i
     y1_axis [i] = np.std(symb_last)
-    x1_axis [i] = i
+    #x1_axis [i] = i
     #mul_error[num]=output[-1]
 
 
 plt.subplot(2,1,1)
 plt.plot(x_axis, y_axis , marker="+", label = 'mean_time_error', color='b')
 plt.legend(loc="upper left")
-plt.xlabel("total numb of up-sampled per symb",color='b')
+plt.xlabel("time offest",color='b')
 plt.ylabel("Time-error for all symbs(1k)", color='b')
-plt.grid(color = 'green', linestyle = '__', linewidth = 0.5)
+plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
 
 
 
@@ -126,7 +126,7 @@ plt.grid(color = 'green', linestyle = '__', linewidth = 0.5)
 plt.subplot(2,1,2)
 plt.plot(x1_axis, y1_axis , marker="x", label = 'std_div',linestyle="-.", color='c')
 plt.legend(loc="upper left")
-plt.xlabel("total numb of up-sampled per symb", color='c')
+plt.xlabel(" time offest ", color='c')
 plt.ylabel("Std-div for all symbs(1k)", color='c')
 plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
 #plt.plot(sampled_data, marker="x")
