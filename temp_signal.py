@@ -74,7 +74,7 @@ for i in range(0,int( up_samp_const)): #up_samp_const 400
     #print("__________\n","sampled_data=",len(sampled_data))
     #print(sampled_data) 
     proc = subprocess.Popen([ 
-        "C:\\Users\Karthik Lokesh\\Desktop\\Proj_Arb\\interpolator\\wrp\\intrpl.exe", 
+        "C:\\Users\Karthik Lokesh\\Desktop\\Proj_Arb\\interpolator\\temp3.exe", 
         "%f" % len(sampled_data),
         "%f" % mu,
         "%f" % Mu_const,
@@ -98,10 +98,10 @@ for i in range(0,int( up_samp_const)): #up_samp_const 400
 
     plot_fl = [float(x) for x in output_fl]
     #print(plot_fl)
-    y2_axis=plot_fl
-    if (i==30):
-        plt.plot(x2_axis, y2_axis , marker="+", label = 'mean_alpha')
-        plt.show()
+    #y2_axis=plot_fl
+    #if (i==30):
+     #   plt.plot(x2_axis, y2_axis , marker="+", label = 'mean_alpha')
+      #  plt.show()
     symb_last = plot_fl[int(-(100)):]
     print("\n loop=",i,":  mean=",np.mean(symb_last))#last alphas=",symb_last, 
     #print("\n \n loop=",i,"no. of symb", no_symb, "samples per symb", samp_per_symb,"alpha=",mu,"alpha mul_const=", Mu_const)

@@ -23,8 +23,8 @@ float Mu = atof(argv[2]);
 float Mu_const = atof(argv[3]);
 int samp_per_symb = atoi(argv[4]); 
 int py_loop_no = atoi(argv[5]); //
-int prc=0,count=0, ofst_mu_al=0;
-float avg_err=0,all_err=0.0,err_signal,samp_offset=0.0;//Mu=0.17,,Mu_const=0.01
+int prc=0,count=0, ofst_mu_al=0,samp_offset=0.0;
+float avg_err=0,all_err=0.0,err_signal;//Mu=0.17,,Mu_const=0.01
 
 
 
@@ -50,7 +50,7 @@ float avg_err=0,all_err=0.0,err_signal,samp_offset=0.0;//Mu=0.17,,Mu_const=0.01
    float* slope =new float[samprate]; //val of samprate will be know dynamical so the array is created dynamically 
     float* slp_amp = new float [samprate]; 
     FILE *fptr; ofstream myfile;
-    //fptr = fopen("C:\\Users\\Karthik Lokesh\\Desktop\\Proj_Arb\\c_arbeit\\temp2.txt","w");
+    fptr = fopen("C:\\Users\\Karthik Lokesh\\Desktop\\Proj_Arb\\c_arbeit\\temp2.txt","w");
     myfile.open("c_inp.txt", ios::out | ios::app);
      //myfile << "Writing this to a file.\n";
       
@@ -66,7 +66,7 @@ float avg_err=0,all_err=0.0,err_signal,samp_offset=0.0;//Mu=0.17,,Mu_const=0.01
         time_err[loop]= 0.0;
         fprintf(fptr,"\n %f",signal[loop]);
         myfile<< signal[loop]<<"  ";
-        if(proc>3)
+        if(proc>1)
         { proc=0;myfile<<"\n";}
      //   printf(" %f",signal[loop]);
         //cout<<time_err[loop];
@@ -87,7 +87,7 @@ float avg_err=0,all_err=0.0,err_signal,samp_offset=0.0;//Mu=0.17,,Mu_const=0.01
 //printf("val of no. signal %d",intr_pt );
 
 samp_offset=0;
-for(int loop=1;loop<samprate-samp_per_symb-2;loop+=(samp_per_symb -1))
+for(int loop=1;loop<samprate-samp_per_symb-4;loop+=(samp_per_symb-1))
 { //cout<<"value of loop="<<loop;
   
   if (Mu > 1)
@@ -104,33 +104,32 @@ for(int loop=1;loop<samprate-samp_per_symb-2;loop+=(samp_per_symb -1))
   cout<<"\n\nMu="<<Mu<<"\t  signal0="<<signal[loop+ int(samp_offset)]<<"+"<<"\t (1-Mu)signal1="<<signal[loop+1+ int(samp_offset)];
   cout<<"\nMu="<<Mu<<"\t  signal1="<<signal[loop+1+ int(samp_offset)]<<"+"<<"\t (1-Mu)signal2="<<signal[loop+2+ int(samp_offset)];
   cout<<"\nMu="<<Mu<<"\t  signal2="<<signal[loop+2+ int(samp_offset)]<<"+"<<"\t (1-Mu)signal3="<<signal[loop+3+ int(samp_offset)];*/
-  myfile<<"\n samp_offset="<<samp_offset <<"\t"<<"Mu="<<Mu;
-  myfile<<"\n\n\t  signal0="<<signal[loop+ int(samp_offset)]<<"+"<<"\t signal1="<<signal[loop+1+ int(samp_offset)];
-  myfile<<"\n\t  signal1="<<signal[loop+1+ int(samp_offset)]<<"+"<<"\t signal2="<<signal[loop+2+ int(samp_offset)];
-  myfile<<"\n\t  signal2="<<signal[loop+2+ int(samp_offset)]<<"+"<<"\t signal3="<<signal[loop+3+ int(samp_offset)];
+  myfile<<"\n samp_offset="<<samp_offset;
+  myfile<<"\n\nMu="<<Mu<<"\t  signal0="<<signal[loop+ int(samp_offset)]<<"+"<<"\t (1-Mu)signal1="<<signal[loop+1+ int(samp_offset)];
+  myfile<<"\nMu="<<Mu<<"\t  signal1="<<signal[loop+1+ int(samp_offset)]<<"+"<<"\t (1-Mu)signal2="<<signal[loop+2+ int(samp_offset)];
+  myfile<<"\nMu="<<Mu<<"\t  signal2="<<signal[loop+2+ int(samp_offset)]<<"+"<<"\t (1-Mu)signal3="<<signal[loop+3+ int(samp_offset)];
   
-    intrpol[loop] = (((1-Mu) * signal[loop + int(samp_offset)])  + (Mu * signal[loop+1+ int(samp_offset)]));
-  intrpol[loop+1] = (((1-Mu) * signal[loop+1+ int(samp_offset)]) + (Mu * signal[loop+2+ int(samp_offset)]));
-  intrpol[loop+2] = (((1-Mu) * signal[loop+2+ int(samp_offset)]) + (Mu * signal[loop+3+ int(samp_offset)]));
-  //intrpol[loop+3] = (((1-Mu) * signal[loop+3+ int(samp_offset)]) + (Mu * signal[loop+4+ int(samp_offset)]));
-
+    intrpol[loop] =     (((1-Mu) * signal[loop + samp_offset]) + (Mu * signal[loop + 1 + samp_offset]));
+    intrpol[loop + 1] = (((1-Mu) * signal[loop + 1 + samp_offset]) + (Mu * signal[loop + 2 + samp_offset]));
+    intrpol[loop + 2] = (((1-Mu) * signal[loop + 2 + samp_offset]) + (Mu * signal[loop + 3 + samp_offset]));
+    
   /*cout<<"\n\n intrp : "<<Mu<<" * "<<signal[loop + int(samp_offset)]<<" + "<< 1-Mu <<" * "<<signal[loop+1+ int(samp_offset)]<<"="<< intrpol[loop];
   cout<<"\n intrp1 : "<<Mu<<" * "<<signal[loop+1+ int(samp_offset)]<<" + "<< 1-Mu <<" * "<<signal[loop+2+ int(samp_offset)]<<"="<< intrpol[loop+1];
   cout<<"\n intrp2 : "<<Mu<<" * "<<signal[loop+2+ int(samp_offset)]<<" + "<< 1-Mu <<" * "<<signal[loop+3+ int(samp_offset)]<<"="<< intrpol[loop+2];
     */
-  myfile<<"\n\n intrp :"<<1-Mu<<" * "<<signal[loop + int(samp_offset)]<< " + "<<Mu <<" * "<<signal[loop+1+ int(samp_offset)]<<"="<< intrpol[loop];
-  myfile<<"\n intrp1 : "<<1-Mu<<" * "<<signal[loop+1+ int(samp_offset)]<<" + "<<Mu <<" * "<<signal[loop+2+ int(samp_offset)]<<"="<< intrpol[loop+1];
-  myfile<<"\n intrp2 : "<<1-Mu<<" * "<<signal[loop+2+ int(samp_offset)]<<" + "<<Mu <<" * "<<signal[loop+3+ int(samp_offset)]<<"="<< intrpol[loop+2];
+  myfile<<"\n\n intrp : "<<1-Mu<<" * "<<signal[loop + int(samp_offset)]<<" + "<< Mu <<" * "<<signal[loop+1+ int(samp_offset)]<<"="<< intrpol[loop];
+  myfile<<"\n intrp1 : "<<1-Mu<<" * "<<signal[loop+1+ int(samp_offset)]<<" + "<< Mu <<" * "<<signal[loop+2+ int(samp_offset)]<<"="<< intrpol[loop+1];
+  myfile<<"\n intrp2 : "<<1-Mu<<" * "<<signal[loop+2+ int(samp_offset)]<<" + "<< Mu <<" * "<<signal[loop+3+ int(samp_offset)]<<"="<< intrpol[loop+2];
     slope[loop+1] = (float)(intrpol[loop+2]- intrpol[loop]); //slope of 2nd point
     
    // cout << "\n\n slope of itp1 " << loop+1 << "th sample  is itp2 - itp \t" <<intrpol[loop+2] << "-" <<intrpol[loop]<<"=" << slope[loop+1] <<"\n";
    myfile << "\n\n slope of itp1 " << loop+1 << "th sample  is itp2 - itp1 \t" <<intrpol[loop+2] << "-" <<intrpol[loop]<<"=" << slope[loop+1] <<"\n";
-       slp_amp[loop+1] = (float)(slope[loop+1] * intrpol[loop +1]);// mul with amp of 2nd point
+       slp_amp[loop+1] = (float)(slope[loop+1] * intrpol[loop+1]);// mul with amp of 2nd point
       
      // cout << "\n slope amplitudde of  " << loop+1 << "th sample  is \t" <<slope[loop+1] << "*" <<intrpol[loop+1]<<"=" << slp_amp[loop+1] <<"\n\n\n";
      
      myfile << "\n slope amplitudde of  " << loop+1 << "th sample  is \t" <<slope[loop+1] << "*" <<intrpol[loop+1]<<"=" << slp_amp[loop+1] <<"\n\n\n";
-          time_err[loop] = slp_amp[loop+1];  
+          time_err[int(loop+1)] = slp_amp[loop+1];  
         
        
         all_err=0;count=0;
@@ -138,7 +137,7 @@ for(int loop=1;loop<samprate-samp_per_symb-2;loop+=(samp_per_symb -1))
         //cout<< "\n\n loop begin for last 5 err: all_err="; 
         myfile<< "\n before add:loop  \t" << "\n avg_err + time_err = " << avg_err <<" + "<< time_err[int((loop/down_samp)+1)];
         myfile<< "\n\n loop begin for last 5 err: all_err=";       
-       for(int arr=loop; arr>0 && count<20;arr--)
+       for(int arr=(loop)+1; arr>0 && count<5;arr--)
         {
         //cout<< time_err[arr] <<"+";
          myfile<< time_err[arr] <<"+";
@@ -148,7 +147,7 @@ for(int loop=1;loop<samprate-samp_per_symb-2;loop+=(samp_per_symb -1))
           
         }
         
-        avg_err= (all_err/(20));
+        avg_err= (all_err/(5));
         //cout<< "\n\nall_err="<< all_err << "\t avg_err=" << avg_err;
         //cout<<"\n\n Mu + (avg_err*Mu_const)=  "<< Mu<<" + "<<avg_err<<" * "<<Mu_const<<" = "<< (Mu + avg_err*Mu_const);
         myfile<< "\n\nall_err="<< all_err << "\t avg_err=" << avg_err;
@@ -157,11 +156,10 @@ for(int loop=1;loop<samprate-samp_per_symb-2;loop+=(samp_per_symb -1))
         //cout << "\n Mu="<< Mu;
         //cout<<"\ntime_err"<< loop <<time_err[loop]<<"\n";
         //printf("%9.5f",time_err[int((loop/down_samp)+1)]);
-        //printf("%9.5f ", (float)(samp_offset + Mu));
+           printf("%9.5f ", (float)(samp_offset + Mu));
+          ofst_mu[int(loop/samp_per_symb)]= (samp_offset + Mu);
 
-         // ofst_mu[int(loop/samp_per_symb)]= (samp_offset + Mu);
-         myfile<<"\n__________________________________________________________________________________\n";
-         myfile <<"\n calculated_mu="<< (float)(samp_offset + Mu);
+        myfile <<"\n calculated_mu="<< (float)(samp_offset + Mu);
 
 }
      /* myfile<<"\n----------\n";
@@ -173,12 +171,12 @@ for(int loop=1;loop<samprate-samp_per_symb-2;loop+=(samp_per_symb -1))
           ofst_mu_al+=ofst_mu[arr2];                 
         }
         
-        myfile <<"\n returns= "<< (ofst_mu_al/(10));*/
+        myfile <<"\n returns= "<< (ofst_mu_al/(10));
 
         //myfile <<"\n returns="<< (ofst_mu[int((samprate/samp_per_symb)-1)] + ofst_mu[int((samprate/samp_per_symb)-2)])/2;
   myfile<<"\n__________________________________________________________________________________\n";
-  //myfile<<loop + 1;
-
+  myfile<<py_loop_no+1;
+*/
  myfile.close();
 
 }

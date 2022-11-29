@@ -35,7 +35,7 @@ int main(int argc, char **argv)
   }
   
   samp_offset = 0;
-  for (int loop = 0; loop < (samprate-samp_per_symb); loop += (samp_per_symb))
+  for (int loop = 1; loop < (samprate-samp_per_symb-4); loop += (samp_per_symb -1))
   { 
 
     if (alpha > 1)
@@ -51,18 +51,18 @@ int main(int argc, char **argv)
 
     intrpol[loop] =     (((1-alpha) * signal[loop + samp_offset]) + (alpha * signal[loop + 1 + samp_offset]));
     intrpol[loop + 1] = (((1-alpha) * signal[loop + 1 + samp_offset]) + (alpha * signal[loop + 2 + samp_offset]));
-    //intrpol[loop + 2] = (((1-alpha) * signal[loop + 2 + samp_offset]) + (alpha * signal[loop + 3 + samp_offset]));
+    intrpol[loop + 2] = (((1-alpha) * signal[loop + 2 + samp_offset]) + (alpha * signal[loop + 3 + samp_offset]));
     //intrpol[loop + 3] = (((1-alpha) * signal[loop + 3 + samp_offset]) + (alpha * signal[loop + 4 + samp_offset]));
 
     /* cout << "\n\n intrp : " << alpha << " * " << signal[loop + samp_offset] << " + " << 1 - alpha << " * " << signal[loop + 1 + samp_offset] << "=" << intrpol[loop];
      cout << "\n intrp1 : " << alpha << " * " << signal[loop + 1 + samp_offset] << " + " << 1 - alpha << " * " << signal[loop + 2 + samp_offset] << "=" << intrpol[loop + 1];
      cout << "\n intrp2 : " << alpha << " * " << signal[loop + 2 + samp_offset] << " + " << 1 - alpha << " * " << signal[loop + 3 + samp_offset] << "=" << intrpol[loop + 2];
     */
-    slope[loop + 1] = (float)(intrpol[loop + 1] - intrpol[loop]); // slope of 2nd point
+    slope[loop + 1] = (float)(intrpol[loop + 2] - intrpol[loop]); // slope of 2nd point
    
     //cout << "\n\n slope of itp 1 " << loop + 1 << "th sample  is itp2 - itp \t" << intrpol[loop + 2] << "-" << intrpol[loop] << "=" << slope[loop + 1] << "\n";
     
-    slp_amp[loop + 1] = (float) (slope[loop + 1] * intrpol[loop]); // alphal with amp of 2nd point
+    slp_amp[loop + 1] = (float) (slope[loop + 1] * intrpol[loop +1]); // alphal with amp of 2nd point
                                                               
     //cout << "\n slope amplitudde of  " << loop + 1 << "th sample  is \t" << slope[loop + 1] << "*" << intrpol[loop + 1] << "=" << slp_amp[loop + 1] << "\n\n\n";
     
@@ -72,7 +72,7 @@ int main(int argc, char **argv)
     count = 0;
     //cout << "\n avg_err + time_err = " << avg_err << " + " << time_err[int((loop / samp_per_symb) + 1)];
 
-    //loop to add all last 5 errors
+    //loop to add all last 20 errors
     for (int arr = (loop / samp_per_symb) + 1; arr > 0 && count < 20; arr--)
     {
       //cout << time_err[arr] << "+";
