@@ -35,15 +35,15 @@ sampled_data = np.ndarray(int((no_symb*samp_per_symb)), dtype=float)#4*1000
 symb = np.ndarray(no_symb, dtype=float)
 symb_last = np.ndarray(int(no_symb/samp_per_symb), dtype=float)
 mu = 0.35 #interpolating constant
-Mu_const=0.025
+Mu_const=0.01
 avg_last=0.0
 
 y_axis = np.arange((up_samp_const), dtype=float) # 400
 x_axis = np.arange(-.5,.5,.0025, dtype=float)#x_axis = np.arange((up_samp_const), dtype=float)
 y1_axis = np.arange((up_samp_const), dtype=float)
-x1_axis = np.arange(-.5,.5,.0025, dtype=float) #x1_axis = np.arange((up_samp_const), dtype=float)
-y2_axis = np.arange(no_symb-1, dtype=float) # -1
-x2_axis = np.arange(no_symb-2, dtype=float)# -2 for quad and cubic --> in loop:samprate-samp_per_symb-4, -4 because we consider 6 samples for 1 cal of delat oe beta
+x1_axis = np.arange((up_samp_const), dtype=float)
+y2_axis = np.arange(no_symb-4, dtype=float) # -1
+x2_axis = np.arange(no_symb-4, dtype=float)# -2 for quad and cubic --> in loop:samprate-samp_per_symb-4, -4 because we consider 6 samples for 1 cal of delat oe beta
 
 random.seed(0) # randomness is const=> each time similar type of signal gen
 for i in range(0, no_symb):
@@ -71,7 +71,7 @@ for i in range(0,int( up_samp_const)):
     #print("__________\n","sampled_data=",len(sampled_data))
     #print(sampled_data) 
     proc = subprocess.Popen([ 
-        "C:\\Users\Karthik Lokesh\\Desktop\\Proj_Arb\\interpolator\\wrp\\el_cubic.exe", 
+        "C:\\Users\Karthik Lokesh\\Desktop\\Proj_Arb\\interpolator\\wrp\\early_late.exe", 
         "%f" % len(sampled_data),
         "%f" % mu,
         "%f" % Mu_const,
@@ -95,11 +95,15 @@ for i in range(0,int( up_samp_const)):
 
     plot_fl = [float(x) for x in output_fl]
         #print(plot_fl)
-        #y_axis=plot_fl
-    #if (i==0 or i==1 or i==2 or i==3 or i==4):
-     #   plt.plot(x2_axis, y2_axis , marker="+", label = 'mean_alpha')
-      #  plt.show()
-    symb_last = plot_fl[int(-(100)):]
+    y2_axis=[plot_fl[i] for i in range(len(plot_fl)) if i % 2 != 0]
+    if (i==205 or i==206 or i==207 or i==208 or i==209):
+       plt.plot(x2_axis, y2_axis , marker="+", label = 'mean_alpha')
+       plt.legend(loc="upper left")
+       plt.xlabel("time offest",color='b')
+       plt.ylabel("Time-error for all symbs(1k)", color='b')
+       plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
+       plt.show()
+    symb_last = plot_fl[int(-(200)):]
     print("\n loop=",i,":  mean=",np.mean(symb_last))#last alphas=",symb_last, 
     #print("\n \n loop=",i,"no. of symb", no_symb, "samples per symb", samp_per_symb,"alpha=",mu,"alpha mul_const=", Mu_const)
    # print("\n mean=",np.mean(symb_last), "\t std deviation=", np.std(symb_last) )

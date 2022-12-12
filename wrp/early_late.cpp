@@ -19,7 +19,7 @@ int main(int argc, char **argv)
   float alpha_const = atof(argv[3]); // interpolating points
   int samp_per_symb = atoi(argv[4]);
   int samp_offset = 0,count = 0;
-  float avg_err = 0, all_err = 0.0, err_signal; // alpha=0.17,,alpha_const=0.01
+  float avg_err = 0, all_err = 0.0, err_signal, pr=0; // alpha=0.17,,alpha_const=0.01
   float *signal = new float[samprate]; // it takes Input from STD I/O stores the signal samples
   float *time_err = new float[samprate]; // It stores time error for each symbol (no. of samples)
   float *intrpol = new float[samprate]; // it stores interpolated vales of signal shifted by alpha
@@ -35,9 +35,9 @@ int main(int argc, char **argv)
   }
   
   samp_offset = 0;
-  for (int loop = 1; loop < (samprate-samp_per_symb-4); loop += (samp_per_symb -1))
+  for (int loop = 1; loop < (samprate-samp_per_symb-4); loop += (samp_per_symb))
   { 
-
+    pr++;
     if (alpha > 1)
     {
       samp_offset += 1;
@@ -49,9 +49,9 @@ int main(int argc, char **argv)
       alpha += 1;
     }
 
-    intrpol[loop] =     (((1-alpha) * signal[loop + samp_offset]) + (alpha * signal[loop + 1 + samp_offset]));
-    intrpol[loop + 1] = (((1-alpha) * signal[loop + 1 + samp_offset]) + (alpha * signal[loop + 2 + samp_offset]));
-    intrpol[loop + 2] = (((1-alpha) * signal[loop + 2 + samp_offset]) + (alpha * signal[loop + 3 + samp_offset]));
+    intrpol[loop + 0] =     (((1-alpha) * signal[loop-1 + samp_offset]) + (alpha * signal[loop + 0 + samp_offset]));
+    intrpol[loop + 1] = (((1-alpha) * signal[loop + 0 + samp_offset]) + (alpha * signal[loop + 1 + samp_offset]));
+    intrpol[loop + 2] = (((1-alpha) * signal[loop + 1 + samp_offset]) + (alpha * signal[loop + 2 + samp_offset]));
     //intrpol[loop + 3] = (((1-alpha) * signal[loop + 3 + samp_offset]) + (alpha * signal[loop + 4 + samp_offset]));
 
     /* cout << "\n\n intrp : " << alpha << " * " << signal[loop + samp_offset] << " + " << 1 - alpha << " * " << signal[loop + 1 + samp_offset] << "=" << intrpol[loop];
@@ -89,6 +89,7 @@ int main(int argc, char **argv)
      //printf("%9.5f",time_err[int((loop/samp_per_symb)+1)]);
     printf("%9.5f", (float)samp_offset + alpha);
   }
+  //cout<<"pr";
 }
 
 // cmd to compile: g++ time_error.cpp temp2.cpp -I ../org/ -o time_error.exe

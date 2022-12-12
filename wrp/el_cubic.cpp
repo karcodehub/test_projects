@@ -35,7 +35,7 @@ int main(int argc, char **argv)
   }
   
   samp_offset = 0;
-  for (int loop = 1; loop < samprate-samp_per_symb-4; loop += (samp_per_symb-1))
+  for (int loop = 2; loop < samprate-samp_per_symb-4; loop += (samp_per_symb))
   { 
 
     if (delta > 1)
@@ -53,20 +53,20 @@ int main(int argc, char **argv)
     co_eff3=.5*(-pow(delta,3)+ pow(delta,2)+ 2*delta);
     co_eff4= ((pow(delta,3)-delta)/6);
     
-    intrpol[loop] =   (co_eff4* signal[loop+3+ samp_offset]) 
-                    + (co_eff3* signal[loop+2+ samp_offset])
-                    + (co_eff2* signal[loop+1+ samp_offset])
-                    + (co_eff1* signal[loop+   samp_offset]);
+    intrpol[loop] =   (co_eff4* signal[loop+1+ samp_offset]) 
+                    + (co_eff3* signal[loop+0+ samp_offset])
+                    + (co_eff2* signal[loop-1+ samp_offset])
+                    + (co_eff1* signal[loop-2+   samp_offset]);
 
-    intrpol[loop + 1]=  (co_eff4* signal[loop+4+ samp_offset]) 
-                      + (co_eff3* signal[loop+3+ samp_offset])
-                      + (co_eff2* signal[loop+2+ samp_offset])
-                      + (co_eff1* signal[loop+1+ samp_offset]);
+    intrpol[loop + 1]=  (co_eff4* signal[loop+2+ samp_offset]) 
+                      + (co_eff3* signal[loop+1+ samp_offset])
+                      + (co_eff2* signal[loop+0+ samp_offset])
+                      + (co_eff1* signal[loop-1+ samp_offset]);
     
-    intrpol[loop + 2]=  (co_eff4* signal[loop+5+ samp_offset]) 
-                      + (co_eff3* signal[loop+4+ samp_offset])
-                      + (co_eff2* signal[loop+3+ samp_offset])
-                      + (co_eff1* signal[loop+2+ samp_offset]);
+    intrpol[loop + 2]=  (co_eff4* signal[loop+3+ samp_offset]) 
+                      + (co_eff3* signal[loop+2+ samp_offset])
+                      + (co_eff2* signal[loop+1+ samp_offset])
+                      + (co_eff1* signal[loop+0+ samp_offset]);
     
     // cout << "\n\n intrp : " << delta << " * " << signal[loop + samp_offset] << " + " << 1 - delta << " * " << signal[loop + 1 + samp_offset] << "=" << intrpol[loop];
     // cout << "\n intrp1 : " << delta << " * " << signal[loop + 1 + samp_offset] << " + " << 1 - delta << " * " << signal[loop + 2 + samp_offset] << "=" << intrpol[loop + 1];

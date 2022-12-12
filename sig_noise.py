@@ -38,10 +38,10 @@ mu = 0.35 #interpolating constant quad&cubic=0.5
 Mu_const=0.045 # quad&cubic=0.125
 avg_last=0.0
 
-y_axis = np.arange((up_samp_const), dtype=float) # 400
-x_axis = np.arange(-.5,.5,.0025, dtype=float)#x_axis = np.arange((up_samp_const), dtype=float)
-y1_axis = np.arange((up_samp_const), dtype=float)
-x1_axis = np.arange(-.5,.5,.0025, dtype=float) #x1_axis = np.arange((up_samp_const), dtype=float)
+y_axis = np.arange((up_samp_const * no_symb), dtype=float) # 400
+x_axis = np.arange(up_samp_const * no_symb, dtype=float)#x_axis = np.arange((up_samp_const), dtype=float)
+y1_axis = np.arange((up_samp_const * no_symb), dtype=float)
+x1_axis = np.arange(up_samp_const * no_symb, dtype=float) #x1_axis = np.arange((up_samp_const), dtype=float)
 y2_axis = np.arange(no_symb-2, dtype=float) # -1
 x2_axis = np.arange(no_symb-2, dtype=float)# -2 for quad and cubic --> in loop:samprate-samp_per_symb-4, -4 because we consider 6 samples for 1 cal of delat oe beta
 y3_axis = np.arange(up_samp_const, dtype=float) # -1
@@ -67,10 +67,21 @@ for i in range(len(symb)):
 
 # Filtering and plotting
 y = butter_lowpass_filter(data, cutoff, fs, order) # print(len(y))= 400000
+#1st is the NumPy array, containing the sample data.
+#2nd is the axis along which the mean can be calculated, Its default value is 0.
+#3rd is the degree of freedom which is a correction to the standard deviation.
+def signaltonoise(a, axis, ddof):
+	a = np.asanyarray(a)
+	m = a.mean(axis)
+	sd = a.std(axis = axis, ddof = ddof)
+	return np.where(sd == 0, 0, m / sd)
 
+random.seed(0)
+noise = np. random. normal(0, .1, y.shape)
+data_noise = y + noise
 
 for i in range(0,int( up_samp_const)): #up_samp 400 loops
-    sampled_data = y[i::int (up_samp_const/samp_per_symb)] # 400/4 , print(len(sampled_data))= 4000
+    sampled_data = data_noise[i::int (up_samp_const/samp_per_symb)] # 400/4 , print(len(sampled_data))= 4000
     
     #np.savetxt('input_sig.txt', [sampled_data], delimiter='\n')
     #with open('C:\\Users\\Karthik Lokesh\\Desktop\\Proj_Arb\\c_arbeit\\input_sig.txt', 'w') as f:
@@ -80,7 +91,7 @@ for i in range(0,int( up_samp_const)): #up_samp 400 loops
     #print("__________\n","sampled_data=",len(sampled_data))
     #print(sampled_data) 
     proc = subprocess.Popen([ 
-        "C:\\Users\Karthik Lokesh\\Desktop\\Proj_Arb\\interpolator\\wrp\\quad_intrpl.exe", 
+        "C:\\Users\Karthik Lokesh\\Desktop\\Proj_Arb\\interpolator\\wrp\\cubic_intrpl.exe", 
         "%f" % len(sampled_data),
         "%f" % mu,
         "%f" % Mu_const,
@@ -115,13 +126,15 @@ for i in range(0,int( up_samp_const)): #up_samp 400 loops
     if (len(non_convg_val) != 0):
 
         #print((non_convg_val))
-        print("len of non_convg_val=",len(non_convg_val))
+       # print("len of non_convg_val=",len(non_convg_val))
         y3_axis[i]= (998- int(non_convg_val[0]))
     else:
         y3_axis[i]=000
     #y3_axis[i]= len(non_convg_idx[0])
     x3_axis[i]=i
-    print("\n loop=",i,":  mean=",np.mean(symb_last))
+    snr= (np.std(plot_fl) / np.std(noise))
+    #print("snr_db=", 20 * np.log10(snr))
+    print("\n loop=",i,":  std=",20 * np.log10(snr))
     # if (i==104 or i==107 or i==109 or i==108 or i==307):
     #    plt.plot(x2_axis, y2_axis , marker="+", label = 'mean_alpha')
     #    plt.legend(loc="upper right")
@@ -141,33 +154,65 @@ for i in range(0,int( up_samp_const)): #up_samp 400 loops
     #x1_axis [i] = i
     #mul_error[num]=output[-1]
     
+    snr= (np.std(plot_fl) / np.std(noise))
+    x4_axis[i]= 20 * np.log10(snr)
+
+    y4_axis[i]= np.std(plot_fl)
 #-----------
-# plt.subplot(2,1,1)
-# plt.plot(x_axis, y_axis , marker="+", label = 'mean_time_error', color='b')
-# plt.legend(loc="upper left")
-# plt.xlabel("time offest",color='b')
-# plt.ylabel("Time-error for all symbs(1k)", color='b')
-# plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
+snr= (np.std(plot_fl) / np.std(noise))
+print("snr_db=", 20 * np.log10(snr))
+
+std= np.std(plot_fl)
+plt.subplot(3,1,1)
+plt.plot(x_axis, y , marker="+", label = 'Pure_signal', color='b')
+plt.legend(loc="upper left")
+plt.xlabel("No. of symbs",color='b')
+plt.ylabel("Amplitude", color='b')
+plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
 
 
 
 
-# plt.subplot(2,1,2)
+# plt.subplot(3,1,2)
 # plt.plot(x1_axis, y1_axis , marker="x", label = 'std_div',linestyle="-.", color='c')
 # plt.legend(loc="upper left")
 # plt.xlabel(" time offest ", color='c')
 # plt.ylabel("Std-div for all symbs(1k)", color='c')
 # plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
+
+plt.subplot(3,1,2)
+plt.plot(x1_axis, noise , marker="x", label = 'Noise signal',linestyle="-.", color='c')
+plt.legend(loc="upper left")
+plt.xlabel(" No. of symbs ", color='c')
+plt.ylabel("Amplitude of Noise", color='c')
+plt.grid(color = 'blue', linestyle = '--', linewidth = 0.5)
+
+# plt.subplot(3,1,3)
+# plt.plot(x1_axis, data_noise , marker="+", label = "Noise_generation_std=0.1" , color='b')
+# plt.legend(loc="upper left")
+# plt.xlabel("No. of symbs ", color='c')
+# plt.ylabel("Amplitude of Signal+Noise", color='c')
+# plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
+
+plt.subplot(3,1,3)
+plt.plot(x4_axis, y4_axis , marker="+", label = "Noise_generation_std=0.1" , color='b')
+plt.legend(loc="upper left")
+plt.xlabel("SNR ", color='c')
+plt.ylabel("STD Dev", color='c')
+plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
+
 # #plt.plot(sampled_data, marker="x")
 # #plt.plot(x2_axis, y2_axis , marker="+", label = 'mean_alpha')
 
 # plt.suptitle("Cubic Interpolator")
 # plt.grid(color = 'green', linestyle = '--', linewidth = 0.1)
 
-plt.plot(x3_axis, y3_axis , marker="+", label = "noise= 0.4" , color='b')
-plt.legend(loc="upper right")
-plt.xlabel(" time offest ", color='c')
-plt.ylabel("Index of last Symbol rejected", color='c')
-plt.title("Noise-Quad corridor=0.1, Mu=.35 Mu_const=0.45" , loc = 'left')
+#plt.plot(x3_axis, y3_axis , marker="+", label = "noise= 0.4" , color='b')
+# plt.legend(loc="upper right")
+# plt.xlabel(" time offest ", color='c')
+# plt.ylabel("Index of last Symbol rejected", color='c')
+# plt.title("Noise-Quad corridor=0.1, Mu=.35 Mu_const=0.45" , loc = 'left')
 
+
+#plt.title("SNR of Signal" , loc = 'left')
 plt.show()
