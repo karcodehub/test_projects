@@ -80,6 +80,8 @@ random.seed(0)
 noise = np. random. normal(0, .1, y.shape)
 data_noise = y + noise
 
+snr= (np.std(data_noise) / np.std(noise))
+print("snr_db=", 20 * np.log10(snr))
 for i in range(0,int( up_samp_const)): #up_samp 400 loops
     sampled_data = data_noise[i::int (up_samp_const/samp_per_symb)] # 400/4 , print(len(sampled_data))= 4000
     
@@ -132,7 +134,7 @@ for i in range(0,int( up_samp_const)): #up_samp 400 loops
         y3_axis[i]=000
     #y3_axis[i]= len(non_convg_idx[0])
     x3_axis[i]=i
-    snr= (np.std(plot_fl) / np.std(noise))
+    snr= (np.std(sampled_data) / np.std(noise))
     #print("snr_db=", 20 * np.log10(snr))
     print("\n loop=",i,":  std=",20 * np.log10(snr))
     # if (i==104 or i==107 or i==109 or i==108 or i==307):
@@ -159,16 +161,16 @@ for i in range(0,int( up_samp_const)): #up_samp 400 loops
 
     y4_axis[i]= np.std(plot_fl)
 #-----------
-snr= (np.std(plot_fl) / np.std(noise))
-print("snr_db=", 20 * np.log10(snr))
+#snr= (np.std(sampled_data) / np.std(noise))
+#print("snr_db=", 20 * np.log10(snr))
 
 std= np.std(plot_fl)
-plt.subplot(3,1,1)
-plt.plot(x_axis, y , marker="+", label = 'Pure_signal', color='b')
-plt.legend(loc="upper left")
-plt.xlabel("No. of symbs",color='b')
-plt.ylabel("Amplitude", color='b')
-plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
+# plt.subplot(3,1,1)
+# plt.plot(x_axis, y , marker="+", label = 'Pure_signal', color='b')
+# plt.legend(loc="upper left")
+# plt.xlabel("No. of symbs",color='b')
+# plt.ylabel("Amplitude", color='b')
+# plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
 
 
 
@@ -180,12 +182,12 @@ plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
 # plt.ylabel("Std-div for all symbs(1k)", color='c')
 # plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
 
-plt.subplot(3,1,2)
-plt.plot(x1_axis, noise , marker="x", label = 'Noise signal',linestyle="-.", color='c')
-plt.legend(loc="upper left")
-plt.xlabel(" No. of symbs ", color='c')
-plt.ylabel("Amplitude of Noise", color='c')
-plt.grid(color = 'blue', linestyle = '--', linewidth = 0.5)
+# plt.subplot(3,1,2)
+# plt.plot(x1_axis, noise , marker="x", label = 'Noise signal',linestyle="-.", color='c')
+# plt.legend(loc="upper left")
+# plt.xlabel(" No. of symbs ", color='c')
+# plt.ylabel("Amplitude of Noise", color='c')
+# plt.grid(color = 'blue', linestyle = '--', linewidth = 0.5)
 
 # plt.subplot(3,1,3)
 # plt.plot(x1_axis, data_noise , marker="+", label = "Noise_generation_std=0.1" , color='b')
@@ -194,12 +196,12 @@ plt.grid(color = 'blue', linestyle = '--', linewidth = 0.5)
 # plt.ylabel("Amplitude of Signal+Noise", color='c')
 # plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
 
-plt.subplot(3,1,3)
-plt.plot(x4_axis, y4_axis , marker="+", label = "Noise_generation_std=0.1" , color='b')
-plt.legend(loc="upper left")
-plt.xlabel("SNR ", color='c')
-plt.ylabel("STD Dev", color='c')
-plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
+# plt.subplot(3,1,3)
+# plt.plot(x4_axis, y4_axis , marker="+", label = "Noise_generation_std=0.1" , color='b')
+# plt.legend(loc="upper left")
+# plt.xlabel("SNR ", color='c')
+# plt.ylabel("STD Dev", color='c')
+# plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
 
 # #plt.plot(sampled_data, marker="x")
 # #plt.plot(x2_axis, y2_axis , marker="+", label = 'mean_alpha')
@@ -207,11 +209,11 @@ plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
 # plt.suptitle("Cubic Interpolator")
 # plt.grid(color = 'green', linestyle = '--', linewidth = 0.1)
 
-#plt.plot(x3_axis, y3_axis , marker="+", label = "noise= 0.4" , color='b')
-# plt.legend(loc="upper right")
-# plt.xlabel(" time offest ", color='c')
-# plt.ylabel("Index of last Symbol rejected", color='c')
-# plt.title("Noise-Quad corridor=0.1, Mu=.35 Mu_const=0.45" , loc = 'left')
+plt.plot(x3_axis, y3_axis , marker="+", label = "noise= 0.4" , color='b')
+plt.legend(loc="upper right")
+plt.xlabel(" time offest ", color='c')
+plt.ylabel("Index of last Symbol rejected", color='c')
+plt.title("Noise-Quad corridor=0.1, Mu=.35 Mu_const=0.45" , loc = 'left')
 
 
 #plt.title("SNR of Signal" , loc = 'left')

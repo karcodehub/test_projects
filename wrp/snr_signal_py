@@ -43,12 +43,17 @@ y_axis = np.arange((up_samp_const * no_symb), dtype=float) # 400
 x_axis = np.arange(up_samp_const * no_symb, dtype=float)#x_axis = np.arange((up_samp_const), dtype=float)
 y1_axis = np.arange((up_samp_const), dtype=float)
 x1_axis = np.arange(-.5,.5,.0025, dtype=float)
-y2_axis = np.arange(no_symb-1, dtype=float) # -1
-x2_axis = np.arange(no_symb-2, dtype=float)# -2 for quad and cubic --> in loop:samprate-samp_per_symb-4, -4 because we consider 6 samples for 1 cal of delat oe beta
 y3_axis = np.arange(up_samp_const, dtype=float) # -1
 x3_axis = np.arange(up_samp_const, dtype=float)
-y4_axis = np.arange(up_samp_const, dtype=float) # -1
-x4_axis = np.arange(up_samp_const, dtype=float)
+y3_axis = np.arange(30, dtype=float) # -1
+x3_axis = np.arange(10,40,1, dtype=float)
+#y4_axis = np.arange(up_samp_const, dtype=float) # -1
+noise_arr = np.arange(0.01,.3,.005, dtype=float)
+y4_axis = np.arange(len(noise_arr), dtype=float) # -1
+x4_axis = np.arange(len(noise_arr), dtype=float)
+
+x5_axis = np.arange(len(noise_arr), dtype=float)
+y5_axis = np.arange(len(noise_arr), dtype=float)
 
 random.seed(0) # randomness is const=> each time similar type of signal gen
 for i in range(0, no_symb):
@@ -71,21 +76,23 @@ y = butter_lowpass_filter(data, cutoff, fs, order) # print(len(y))= 400000
 #1st is the NumPy array, containing the sample data.
 #2nd is the axis along which the mean can be calculated, Its default value is 0.
 #3rd is the degree of freedom which is a correction to the standard deviation.
-def signaltonoise(a, axis, ddof):
-	a = np.asanyarray(a)
-	m = a.mean(axis)
-	sd = a.std(axis = axis, ddof = ddof)
-	return np.where(sd == 0, 0, m / sd)
+# def signaltonoise(a, axis, ddof):
+# 	a = np.asanyarray(a)
+# 	m = a.mean(axis)
+# 	sd = a.std(axis = axis, ddof = ddof)
+# 	return np.where(sd == 0, 0, m / sd)
 
-random.seed(0)
 
-noise = np. random. normal(0, noise_std, y.shape)
-data_noise = y + noise
+for i in range(0,int( len(noise_arr))): #up_samp 30 loops
+    np.random.seed(0)
 
-snr= (np.std(data_noise) / np.std(noise))
-print("snr_db=", 20 * np.log10(snr))
-for i in range(0,int( up_samp_const)): #up_samp 400 loops
-    sampled_data = data_noise[i::int (up_samp_const/samp_per_symb)] # 400/4 , print(len(sampled_data))= 4000
+    noise = np. random. normal(0, noise_arr[i], y.shape)
+    data_noise = y + noise
+
+    # snr= (np.std(data_noise) / np.std(noise))
+    #print(" data_noise snr_db=", 20 * np.log10(snr))
+
+    sampled_data = data_noise[26::int (up_samp_const/samp_per_symb)] # 400/4 , print(len(sampled_data))= 4000
     
     #np.savetxt('input_sig.txt', [sampled_data], delimiter='\n')
     #with open('C:\\Users\\Karthik Lokesh\\Desktop\\Proj_Arb\\c_arbeit\\input_sig.txt', 'w') as f:
@@ -131,15 +138,15 @@ for i in range(0,int( up_samp_const)): #up_samp 400 loops
 
         #print((non_convg_val))
        # print("len of non_convg_val=",len(non_convg_val))
-        y3_axis[i]= (998- int(non_convg_val[0]))
+        y5_axis[i]= (998- int(non_convg_val[0]))
     else:
-        y3_axis[i]=000
+        y5_axis[i]=000
     #y3_axis[i]= len(non_convg_idx[0])
-    x3_axis[i]=i
+    #x3_axis[i]=i
     snr= (np.std(plot_fl) / np.std(noise))
-    x4_axis[i]=20 * np.log10(snr)
-    y4_axis[i]= np.std(plot_fl)
-    print("\n loop=",i,":  std=",20 * np.log10(snr))
+    x5_axis[i]=20 * np.log10(snr)
+    y4_axis[i]= np.std(symb_last )
+    print("\n loop=",i,":  SNR_dB=",x5_axis[i],"\t idx_last_symb_out=", y5_axis[i])
     # if (i==104 or i==107 or i==109 or i==108):
     #     plt.plot(x2_axis, y2_axis , marker="+", label = 'mean_alpha')
     #     plt.legend(loc="upper right")
@@ -240,16 +247,16 @@ print("950- 1000=",count_range_in_list(y3_axis, 950, 1000))
 # plt.grid(color = 'green', linestyle = '--', linewidth = 0.1)
 
 plt.subplot(2,1,1)
-plt.title("Noise-Cubic corridor=0.1, Mu=.35 " , loc = 'left')
-plt.plot(x3_axis, y3_axis , marker="+", label = Mu_const , color='b')
-plt.legend(loc="upper left")
-plt.xlabel(" time offest ", color='c')
+plt.title("Noise-Cubic-EL corridor=0.1, Mu=.35 " , loc = 'left')
+plt.plot(x5_axis, y5_axis , marker="+", label = Mu_const , color='b')
+plt.legend(loc="upper right")
+plt.xlabel(" SNR dB ", color='c')
 plt.ylabel("Index of last Symbol rejected", color='c')
 
 plt.subplot(2,1,2)
-plt.plot(x4_axis, y4_axis , marker="+", label = noise_std , color='b')
-plt.legend(loc="upper left")
-plt.xlabel("SNR ", color='c')
+plt.plot(x5_axis, y4_axis , marker="+", label = noise_std , color='b')
+plt.legend(loc="upper right")
+plt.xlabel("SNR dB ", color='c')
 plt.ylabel("STD Dev", color='c')
 plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
 

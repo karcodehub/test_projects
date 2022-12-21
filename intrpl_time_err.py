@@ -122,13 +122,13 @@ for i in range(0,int( up_samp_const)): #up_samp 400 loops
     #y3_axis[i]= len(non_convg_idx[0])
     x3_axis[i]=i
     print("\n loop=",i,":  mean=",np.mean(symb_last))
-    # if (i==104 or i==107 or i==109 or i==108 or i==307):
-    #    plt.plot(x2_axis, y2_axis , marker="+", label = 'mean_alpha')
-    #    plt.legend(loc="upper right")
-    #    plt.xlabel("time offest",color='b')
-    #    plt.ylabel("Time-error for all symbs(1k)", color='b')
-    #    plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
-    #    plt.show()#last alphas=",symb_last, 
+    if (i==106 or i==127 or i==138 or i==225 or i==307):
+       plt.plot(x2_axis, y2_axis , marker="+", label = 'mean_alpha')
+       plt.legend(loc="upper right")
+       plt.xlabel("time offest",color='b')
+       plt.ylabel("Time-error for all symbs(1k)", color='b')
+       plt.grid(color = 'green', linestyle = '--', linewidth = 0.5)
+       plt.show()#last alphas=",symb_last, 
     #print("\n \n loop=",i,"no. of symb", no_symb, "samples per symb", samp_per_symb,"alpha=",mu,"alpha mul_const=", Mu_const)
    # print("\n mean=",np.mean(symb_last), "\t std deviation=", np.std(symb_last) )
     #print('_________________________________________________________________________________________')

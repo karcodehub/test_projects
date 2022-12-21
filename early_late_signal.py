@@ -95,7 +95,7 @@ for i in range(0,int( up_samp_const)):
 
     plot_fl = [float(x) for x in output_fl]
         #print(plot_fl)
-    y2_axis=[plot_fl[i] for i in range(len(plot_fl)) if i % 2 != 0]
+    y2_axis=plot_fl
     if (i==205 or i==206 or i==207 or i==208 or i==209):
        plt.plot(x2_axis, y2_axis , marker="+", label = 'mean_alpha')
        plt.legend(loc="upper left")
